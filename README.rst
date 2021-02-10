@@ -5,6 +5,9 @@ Networkmanager-dmenu
 
 Manage NetworkManager connections with dmenu instead of nm-applet
 
++ Bluetoothfix to toggle bluetooth
+   (requires you to append "%wheel ALL=NOPASSWD:/bin/bluetooth" in /etc/sudoers)
+
 Features
 --------
 
