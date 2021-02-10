@@ -579,12 +579,13 @@ def toggle_bluetooth(enable):
     """Enable/disable Bluetooth
 
     Args: enable - boolean
+    
+    Important:
+    add the following line to 'etc/sudoers':
+    %wheel ALL=NOPASSWD:/bin/bluetooth
 
     References:
-    https://github.com/blueman-project/blueman/blob/master/blueman/plugins/mechanism/RfKill.py
-    https://www.kernel.org/doc/html/latest/driver-api/rfkill.html
     https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/include/uapi/linux/rfkill.h?h=v5.8.9
-
     """
     type_bluetooth = 2
     op_change_all = 3
@@ -595,16 +596,7 @@ def toggle_bluetooth(enable):
     data = struct.pack("IBBBB", idx, type_bluetooth, op_change_all,
                        soft_state, hard_state)
 
-    try:
-        with open('/dev/rfkill', 'r+b', buffering=0) as rff:
-            rff.write(data)
-    except PermissionError:
-        notify("Lacking permission to write to /dev/rfkill.",
-               "Maybe you need to add your user to the 'rfkill' group?",
-               urgency="critical")
-    else:
-        notify("Bluetooth {}".format("enabled" if enable else "disabled"))
-
+    Popen(["sudo","bluetooth","on" if enable else "off"],stdout=PIPE).communicate()
 
 def launch_connection_editor():
     """Launch nmtui or the gui nm-connection-editor
